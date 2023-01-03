@@ -2,7 +2,6 @@
 //  Decode.swift
 //  MovieDB_nosql
 //
-//  Created by Emmanuel Flores on 12/20/22.
 //
 
 import Foundation

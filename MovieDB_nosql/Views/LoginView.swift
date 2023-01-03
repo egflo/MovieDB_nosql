@@ -2,7 +2,6 @@
 //  LoginView.swift
 //  MovieDB_nosql
 //
-//  Created by Emmanuel Flores on 12/19/22.
 //
 
 import SwiftUI

@@ -2,7 +2,6 @@
 //  CastView.swift
 //  MovieDB_nosql
 //
-//  Created by Emmanuel Flores on 12/21/22.
 //
 
 import SwiftUI
