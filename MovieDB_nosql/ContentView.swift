@@ -8,7 +8,73 @@
 import SwiftUI
 import CoreData
 
+
 struct ContentView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @StateObject var alert = Alert()
+
+    @State var selectedTab = 1
+
+    
+    var body: some View {
+        
+            VStack {
+                
+                TabView(selection: $selectedTab) {
+                    
+                    VStack{
+                        NavigationStack {
+                            HomeView()
+                            
+                        }
+                    }
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }
+                    .tag(1)
+                    
+                    VStack{
+                        NavigationStack {
+                            SearchView()
+                        }
+                    }
+                    .tabItem {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
+                    .tag(2)
+                    
+                    
+                    VStack{
+                        NavigationStack {
+                            FavoritesView()
+                        }
+                    }
+                    .tabItem {
+                        Label("Favorites", systemImage: "heart")
+                    }
+                    .tag(3)
+                    
+                    VStack{
+                        NavigationStack {
+                            UserView()
+                        }
+                    }
+                    .tabItem {
+                        Label("Account", systemImage: "person.crop.circle")
+                    }
+                    .tag(4)
+                    
+                }
+            }
+            .environmentObject(alert)
+        
+            .toastView(toast: $alert.toast)
+    }
+    
+}
+
+
+struct ContentsView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
