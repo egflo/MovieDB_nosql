@@ -8,6 +8,7 @@ import SwiftUI
 import Firebase
 import Alamofire
 
+import UIKit
 
 
 
@@ -65,7 +66,7 @@ struct ReviewCard: View {
                         
                         Button {
                             print("Not for me")
-                            dislike.toggle()
+                            create(id: review.id, status: Status.dislike)
                             if like {
                                 like = false
                             }
@@ -83,8 +84,7 @@ struct ReviewCard: View {
                         
                         Button {
                             print("I like this")
-                            create(id: review.id, isLiked: true)
-                            like.toggle()
+                            create(id: review.id, status: Status.like)
                             if dislike {
                                 dislike = false
                             }
@@ -119,7 +119,7 @@ struct ReviewCard: View {
 
 extension ReviewCard {
     
-    func create(id: String, isLiked: Bool) {
+    func create(id: String, status: Status) {
         guard let user = Auth.auth().currentUser else {
             alert.toast = Toast(type: .error, headline: "Error", subtitle: "Unable to retrieve user information")
             return
@@ -129,16 +129,22 @@ extension ReviewCard {
         let parameters: Parameters = [
             "objectId": id,
             "userId": user.uid,
-            "liked": isLiked,
+            "status": status.rawValue,
             "created": timeStamp
         ]
-        
         
         let path = "/review/rate"
         NetworkManager.shared.postRequest(of: Response<Sentiment>.self, path: path, parameters: parameters){ (result) in
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
+                    
+                    if status == .like {
+                        like.toggle()
+                    }
+                    if status == .dislike {
+                        dislike.toggle()
+                    }
                     
                     print(response)
                     alert.toast = Toast(type: response.success ? .success : .error, headline: "Info", subtitle:response.message)
@@ -186,20 +192,36 @@ struct Reviews: View {
                                         .navigationBarBackButtonHidden(true)
                                     
                                 } label: {
-                                    ReviewCard(review: review)
-                                        .frame(minWidth: 150, maxWidth: 300)
-                                        .frame(height: 300)
                                     
-                                    
-                                    //.onTapGesture(perform: {
-                                    //    self.selected = review
-                                    // })
+                                    if UIDevice.isPhone {
+                                        ReviewCard(review: review)
+                                        .frame(minWidth: 0, maxWidth: 250)
+                                        .frame(height: 200)
                                         .task {
                                             if review == items.last && !last {
                                                 self.page += 1
                                                 loadQuery()
                                             }
                                         }
+                                        
+                                    }
+                                    else {
+                                        ReviewCard(review: review)
+                                        .frame(minWidth: 250, maxWidth: 300)
+                                        .frame(height: 300)
+                                        .task {
+                                            if review == items.last && !last {
+                                                self.page += 1
+                                                loadQuery()
+                                            }
+                                        }
+                                    
+                                    }
+        
+                                    //.onTapGesture(perform: {
+                                    //    self.selected = review
+                                    // })
+
                                     
                                 }
                                 .buttonStyle(PlainButtonStyle())
@@ -280,9 +302,8 @@ struct ReviewsCompact: View {
                             
                         } label: {
                             ReviewCard(review: review)
-                                .frame(minWidth: 0, maxWidth: 300)
-
-                                .frame(height: 300)
+                                .frame(minWidth: 0, maxWidth: 250)
+                                .frame(height: 200)
 
 
                                 .onTapGesture(perform: {

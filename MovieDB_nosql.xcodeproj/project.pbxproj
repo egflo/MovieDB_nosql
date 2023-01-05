@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B50D1E75296654A100196218 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50D1E74296654A100196218 /* UIDevice.swift */; };
 		B545501A29515E0C008BAB0D /* MovieDB_nosqlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B545501929515E0C008BAB0D /* MovieDB_nosqlApp.swift */; };
 		B545501C29515E0C008BAB0D /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B545501B29515E0C008BAB0D /* Persistence.swift */; };
 		B545501F29515E0C008BAB0D /* MovieDB_nosql.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B545501D29515E0C008BAB0D /* MovieDB_nosql.xcdatamodeld */; };
@@ -49,6 +50,8 @@
 		B5F32C81295B4D2F009550FC /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = B5F32C80295B4D2F009550FC /* WrappingHStack */; };
 		B5F32C83295C21B8009550FC /* ToastViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F32C82295C21B8009550FC /* ToastViewModel.swift */; };
 		B5F32C8929602770009550FC /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = B5F32C8829602770009550FC /* CachedAsyncImage */; };
+		B5F75B32296485400084304C /* SkeletonView in Frameworks */ = {isa = PBXBuildFile; productRef = B5F75B31296485400084304C /* SkeletonView */; };
+		B5F75B3529648EC80084304C /* SkeletonUI in Frameworks */ = {isa = PBXBuildFile; productRef = B5F75B3429648EC80084304C /* SkeletonUI */; };
 		B5FEAB782956D0010000CF11 /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FEAB772956D0010000CF11 /* ActionView.swift */; };
 		B5FEAB7A295984BF0000CF11 /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FEAB79295984BF0000CF11 /* BookmarksView.swift */; };
 		B5FEAB7C295986920000CF11 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FEAB7B295986920000CF11 /* CardView.swift */; };
@@ -72,6 +75,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B50D1E74296654A100196218 /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
 		B545501629515E0C008BAB0D /* MovieDB_nosql.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieDB_nosql.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B545501929515E0C008BAB0D /* MovieDB_nosqlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDB_nosqlApp.swift; sourceTree = "<group>"; };
 		B545501B29515E0C008BAB0D /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -113,6 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B545507129519EE1008BAB0D /* FirebaseRemoteConfig in Frameworks */,
+				B5F75B3529648EC80084304C /* SkeletonUI in Frameworks */,
 				B54550782951A01E008BAB0D /* Alamofire in Frameworks */,
 				B545506B29519EE0008BAB0D /* FirebaseDatabaseSwift in Frameworks */,
 				B545506329519EE0008BAB0D /* FirebaseAppCheck in Frameworks */,
@@ -120,6 +125,7 @@
 				B545507529519EE1008BAB0D /* FirebaseStorageCombine-Community in Frameworks */,
 				B545506729519EE0008BAB0D /* FirebaseAuthCombine-Community in Frameworks */,
 				B545506529519EE0008BAB0D /* FirebaseAuth in Frameworks */,
+				B5F75B32296485400084304C /* SkeletonView in Frameworks */,
 				B545507329519EE1008BAB0D /* FirebaseStorage in Frameworks */,
 				B5F32C8929602770009550FC /* CachedAsyncImage in Frameworks */,
 				B545506129519EE0008BAB0D /* FirebaseAnalyticsSwift in Frameworks */,
@@ -148,6 +154,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B50D1E732966548D00196218 /* Extentsions */ = {
+			isa = PBXGroup;
+			children = (
+				B50D1E74296654A100196218 /* UIDevice.swift */,
+			);
+			path = Extentsions;
+			sourceTree = "<group>";
+		};
 		B545500D29515E0C008BAB0D = {
 			isa = PBXGroup;
 			children = (
@@ -171,6 +185,7 @@
 		B545501829515E0C008BAB0D /* MovieDB_nosql */ = {
 			isa = PBXGroup;
 			children = (
+				B50D1E732966548D00196218 /* Extentsions */,
 				B545507C2951A403008BAB0D /* ViewModels */,
 				B545505829519D8A008BAB0D /* GoogleService-Info.plist */,
 				B545505329516585008BAB0D /* Views */,
@@ -276,6 +291,8 @@
 				B54550772951A01E008BAB0D /* Alamofire */,
 				B5F32C80295B4D2F009550FC /* WrappingHStack */,
 				B5F32C8829602770009550FC /* CachedAsyncImage */,
+				B5F75B31296485400084304C /* SkeletonView */,
+				B5F75B3429648EC80084304C /* SkeletonUI */,
 			);
 			productName = MovieDB_nosql;
 			productReference = B545501629515E0C008BAB0D /* MovieDB_nosql.app */;
@@ -355,6 +372,8 @@
 				B54550762951A01E008BAB0D /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B5F32C7F295B4D2F009550FC /* XCRemoteSwiftPackageReference "WrappingHStack" */,
 				B5F32C8729602770009550FC /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
+				B5F75B30296485400084304C /* XCRemoteSwiftPackageReference "SkeletonView" */,
+				B5F75B3329648EC80084304C /* XCRemoteSwiftPackageReference "SkeletonUI" */,
 			);
 			productRefGroup = B545501729515E0C008BAB0D /* Products */;
 			projectDirPath = "";
@@ -406,6 +425,7 @@
 				B545502129515E0C008BAB0D /* ContentView.swift in Sources */,
 				B5F32C7E295AD4F7009550FC /* ResultsView.swift in Sources */,
 				B54550862952A8FD008BAB0D /* CapsuleView.swift in Sources */,
+				B50D1E75296654A100196218 /* UIDevice.swift in Sources */,
 				B545504A29515E42008BAB0D /* HomeView.swift in Sources */,
 				B545505029515F63008BAB0D /* UserView.swift in Sources */,
 				B545504E29515F3C008BAB0D /* FavoritesView.swift in Sources */,
@@ -823,6 +843,22 @@
 				kind = branch;
 			};
 		};
+		B5F75B30296485400084304C /* XCRemoteSwiftPackageReference "SkeletonView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Juanpe/SkeletonView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		B5F75B3329648EC80084304C /* XCRemoteSwiftPackageReference "SkeletonUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CSolanaM/SkeletonUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -905,6 +941,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B5F32C8729602770009550FC /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
 			productName = CachedAsyncImage;
+		};
+		B5F75B31296485400084304C /* SkeletonView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5F75B30296485400084304C /* XCRemoteSwiftPackageReference "SkeletonView" */;
+			productName = SkeletonView;
+		};
+		B5F75B3429648EC80084304C /* SkeletonUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5F75B3329648EC80084304C /* XCRemoteSwiftPackageReference "SkeletonUI" */;
+			productName = SkeletonUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 

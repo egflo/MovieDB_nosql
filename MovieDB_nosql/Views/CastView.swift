@@ -76,14 +76,23 @@ struct CastView: View {
                                       .resizable()
                                       .aspectRatio(contentMode: .fill)
                                       //.frame(width: 150, height: 200)
-                                      .frame(minWidth: 150, maxWidth: 250, minHeight: 200, maxHeight: 300)
                                       .cornerRadius(8)
+#if os(iOS)
+                                              .frame(minWidth: 150, maxWidth: 180, minHeight: 200, maxHeight: 220)
+#else
+                                              .frame(minWidth: 150, maxWidth: 250, minHeight: 200, maxHeight: 350)
+#endif
+         
                                       
                               } placeholder: {
                                   Image("Placeholder")
                                       .resizable()
                                       .aspectRatio(contentMode: .fill)
-                                      .frame(minWidth: 150, maxWidth: 250, minHeight: 200, maxHeight: 300)
+#if os(iOS)
+                                              .frame(minWidth: 150, maxWidth: 180, minHeight: 200, maxHeight: 220)
+#else
+                                              .frame(minWidth: 150, maxWidth: 250, minHeight: 200, maxHeight: 350)
+#endif
                                       .cornerRadius(8)
 
                               }
@@ -136,7 +145,14 @@ struct CastView: View {
 
                 DropDownCast(cast: info)
                 
+#if os(iOS)
+                ResultsView(data: ResultData(title: nil, path: "/movie/cast/\(cast.id)", query: URLQueryItem(name: "sortBy", value: "revenue"), style: CardStyle.REGULAR, orientation: Orientation.VERTICAL))
+
+#else
                 ResultsView(data: ResultData(title: nil, path: "/movie/cast/\(cast.id)", query: URLQueryItem(name: "sortBy", value: "revenue"), style: CardStyle.REGULAR, orientation: Orientation.HORIZONTAL))
+
+#endif
+                
 
                 
             }

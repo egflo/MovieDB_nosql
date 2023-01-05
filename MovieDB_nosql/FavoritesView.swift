@@ -8,24 +8,43 @@ import SwiftUI
 import Firebase
 
 struct FavoritesView: View {
-    @State private var items = [Bookmark]()
-    @State private var page: Int  = 0
-    @State private var last: Bool = false
-    @State private var selected: Bookmark?
 
-    @State private var isLoading: Bool = false
-    let columns = [
-        //GridItem(.adaptive(minimum: 100))
-        GridItem(.adaptive(minimum: 120))
-    ]
-    
-    @State var token: String?
+    @ObservedObject var viewModel = UserViewModel()
+
     
     var body: some View {
         NavigationStack {
+            
+            if viewModel.isSignedIn {
+                BookmarksView(style: CardStyle.REGULAR, orientation: Orientation.VERTICAL)
+                    .padding(.horizontal)
+            }
 
-            BookmarksView(style: CardStyle.REGULAR, orientation: Orientation.VERTICAL)
+            else {
+                VStack {
+                    Text("Sign-in to view your list")
+                        .font(.headline)
+                        
+                    NavigationLink(destination: LoginView()) {
+                        Button {
+                            
+                        } label: {
+                            Text("Log In")
+                            
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .foregroundColor(.white)
+                        .background( .blue)
+                        .cornerRadius(8)
+                        
+                    }
+                }
+                
                 .padding(.horizontal)
+
+            }
+
                
         }
         .navigationTitle("Favorites")

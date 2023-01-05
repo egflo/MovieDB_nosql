@@ -17,12 +17,20 @@ class UserObject: ObservableObject {
     @Published var user: User? = nil
 }
 
+
+enum Status: String {
+    case like = "like"
+    case dislike = "dislike"
+    case love = "love"
+}
+
+
 // MARK: - Pagabable
 struct Sentiment: Codable {
     let userId: String
     let objectId: String
     let created: String
-    let isLiked: Bool
+    let status: String
 }
 
 

@@ -9,6 +9,8 @@ import WrappingHStack
 import CachedAsyncImage
 import Alamofire
 import Firebase
+import SkeletonUI
+import UIKit
 
 
 extension Double {
@@ -37,7 +39,7 @@ struct ReviewSection: View {
 
     var body: some View {
         if horizontalSizeClass == .compact {
-            ReviewsCompact(movie: movie) // view laid out for smaller screens, like an iPhone
+            Reviews(movie: movie) // view laid out for smaller screens, like an iPhone
 
         } else {
             Reviews(movie: movie) // view laid out for wide screens, like an iPad
@@ -462,97 +464,99 @@ struct CastsCompact: View {
     
     var body: some View {
         if let cast = movie.cast {
-            
-            VStack(alignment: .leading, content: {
-                HStack {
-                    Text("Cast & Crew").font(.subheadline).bold()
-                    
-                }
-                .padding()
+
+            HeaderContainerView(title: "Cast & Crew", content: {
                 
-            })
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemGray5))
-            .foregroundColor(Color.blue)
-            
-            ScrollView(.vertical) {
-                VStack(spacing:0) {
-                    ForEach(cast, id: \.id) { cast in
-                        NavigationLink {
-                            CastView(cast: cast)
-                                .navigationBarBackButtonHidden(true)
+                ScrollView(.vertical) {
+                    VStack(spacing:0) {
+                        ForEach(cast, id: \.id) { cast in
+                            NavigationLink {
+                                CastView(cast: cast)
+                                    .navigationBarBackButtonHidden(true)
 
-                        } label: {
-                            
-                            VStack(spacing: 0) {
-                                Divider()
-                                HStack {
-                                    
-                                    VStack {
-                                        RoundedRectangle(cornerRadius: 0)
-                                              .aspectRatio(1.0 , contentMode: .fill)
-                                              .foregroundColor(.gray.opacity(0.3))
-                                              .overlay {
-                                                  
-                                                  if let photo = cast.photo {
-                                                      AsyncImage(url: URL(string: photo)) { image in
-                                                            image
-                                                              .resizable()
-                                                              .aspectRatio(contentMode: .fill)
+                            } label: {
+                                
+                                VStack(spacing: 0) {
+                                    Divider()
+                                    HStack {
+                                        
+                                        VStack {
+                                            RoundedRectangle(cornerRadius: 0)
+                                                  .aspectRatio(1.0 , contentMode: .fill)
+                                                  .foregroundColor(.gray.opacity(0.3))
+                                                  .overlay {
+                                                      
+                                                      if let photo = cast.photo {
+                                                          AsyncImage(url: URL(string: photo)) { image in
+                                                                image
+                                                                  .resizable()
+                                                                  .aspectRatio(contentMode: .fill)
 
-                                                        } placeholder: {
-                                                            ProgressView()
-                                                        }
-                                               
-                                                  }
-                                                  
-                                                  else {
-                                                      Image(systemName: "person")
-                                                          //.cornerRadius(8)
+                                                            } placeholder: {
+                                                                ProgressView()
+                                                            }
+                                                   
+                                                      }
+                                                      
+                                                      else {
+                                                          Image(systemName: "person")
+                                                          
+                                                      }
+                                                    
                                                       
                                                   }
-                                                  
-                                                  
-                                              }
-                                   
-                                    }
-                                    .clipped()
-                                    .frame(width: 60, height: 80)
+                                       
+                                        }
+                                        .clipped()
+                                        .cornerRadius(8)
+                                        .padding(5)
+                                        .frame(width: 80)
 
-
-                                    
-                                    
-                                    VStack(alignment: .leading) {
-                                        Text(cast.name)
-                                            .font(.headline).bold()
                                         
-                                        HStack(spacing: 5){
-                                            if cast.characters.count > 0 {
-                                                ForEach(cast.characters, id: \.self) { character in
-                                                    Text(character)
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text(cast.name)
+                                                .font(.headline).bold()
+                                            
+                                            HStack(spacing: 5){
+                                                if cast.characters.count > 0 {
+                                                    ForEach(cast.characters, id: \.self) { character in
+                                                        Text(character)
+                                                            .font(.subheadline).bold().foregroundColor(.gray)
+                                                    }
+                                                }
+                                                else {
+                                                    Text(cast.category?.description ?? "")
                                                         .font(.subheadline).bold().foregroundColor(.gray)
                                                 }
-                                            }
-                                            else {
-                                                Text(cast.category?.description ?? "")
-                                                    .font(.subheadline).bold().foregroundColor(.gray)
+
                                             }
 
                                         }
+                                        .padding(.leading,5)
 
-                                    }.padding(.leading,15)
-
-
-                                    Spacer()
+                                        Spacer()
+                                        
+                                        Image(systemName: "chevron.right")
+                                            //.resizable()
+                                            //.scaledToFit()
+                                            .padding(.vertical)
+                                            .foregroundColor(.gray)
+                                            
+                                        
+                                    }
+                                    Divider()
                                 }
-                                Divider()
-                            }
-                                
-                        }.buttonStyle(PlainButtonStyle())
-                    }
-                }
+                                .frame(height: 80)
 
-            }
+                                    
+                            }.buttonStyle(PlainButtonStyle())
+                        }
+                    }
+
+                }
+            })
+
 
         }
 
@@ -563,7 +567,6 @@ struct CastsCompact: View {
 struct MoviePopOverView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var alert = Alert()
-
     
     //let id: String
     @State var movie: Movie?
@@ -584,18 +587,22 @@ struct MoviePopOverView: View {
                   
                         ZStack {
                             
-                                
                                 if let background = movie.background {
+                                    
                                     CachedAsyncImage(url: URL(string: background)) { image in
                                           image
                                               .resizable()
                                               .aspectRatio(contentMode: .fill)
                                               //.blur(radius: 4)
                                               
-                                      } placeholder: {
-                                          Image("Placeholder")
-                                              .resizable()
-                                              .aspectRatio(contentMode: .fill)
+                                    } placeholder: {
+                                        VStack {
+                                            Image("Placeholder")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+
+                                        }
+
                                       }
                          
                                     
@@ -604,29 +611,46 @@ struct MoviePopOverView: View {
                                     Image("Placeholder")
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
+
+                                        
                                     
                                 }
                                 
-                                if let poster = movie.poster {
-                                    
-                                    CachedAsyncImage(url: URL(string: poster)) { image in
-                                          image
-                                              .resizable()
-                                              .aspectRatio(contentMode: .fill)
-                                              .frame(minWidth: 150, maxWidth: 250, minHeight: 200, maxHeight: 350)
-                                              .cornerRadius(8)
-                                              
-                                      } placeholder: {
-                                          Image("Placeholder")
-                                              .resizable()
-                                              .aspectRatio(contentMode: .fill)
-                                              .frame(minWidth: 150, maxWidth: 250, minHeight: 200, maxHeight: 350)
-                                              .cornerRadius(8)
+                            
+                                RoundedRectangle(cornerRadius: 8)
+                                      .aspectRatio(1.0 , contentMode: .fit)
+                                      .foregroundColor(.gray.opacity(0.3))
+                                      .overlay {
+                                          if let poster = movie.poster {
+                                              AsyncImage(url: URL(string: poster)) { image in
+                                                  image
+                                                      .resizable()
+                                                      .scaledToFill()
+                                                      .aspectRatio(1, contentMode: .fit)
+                                                      .clipped()
 
+
+                                                  
+                                              } placeholder: {
+                                                  ProgressView()
+
+                                              }
+                                              
+                                          }
+                                          
+                                          
+                                          else {
+                                              Image(systemName: "film")
+                                                  .font(.system(size: 25.0))
+                                                  //.aspectRatio(1, contentMode: .fill)
+                                                  .foregroundColor(.blue)
+
+                                              
+                                          }
                                       }
-                         
-                                    
-                                }
+                                      .frame(minWidth: 150, maxWidth: UIDevice.isPad ? 250: 150, minHeight: 200, maxHeight: UIDevice.isPad ? 350 : 200)
+                                      .cornerRadius(8)
+                            
                                 
                                 Button {
                                     dismiss()
@@ -649,13 +673,16 @@ struct MoviePopOverView: View {
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
 
                             }
+                
                         
                     }
                   
                     VStack(alignment: .center, spacing: 10){
                         
-                        Text(movie.title).font(.system(size: 28)).bold()
+                        Text(movie.title).font(.system(size: 28))
+                            .bold()
                             .frame(maxWidth: .infinity, alignment: .center)
+
 
                         Text(formatSubheadline(movie: movie))
                             .font(.system(size: 15))

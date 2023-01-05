@@ -11,10 +11,11 @@ import Firebase
 struct HomeView: View {
     
     @State var queries = []
-    @State var show = false
+    @ObservedObject var viewModel = UserViewModel()
+
     
     let params = [
-        ResultData(title: nil, path: "/movie/all", query: URLQueryItem(name: "sortBy", value: "ratings.numOfVotes"), style: CardStyle.REGULAR, orientation: Orientation.HORIZONTAL),
+        ResultData(title: nil, path: "/movie/all", query: URLQueryItem(name: "sortBy", value: "ratings.numOfVotes"), style: CardStyle.EXPANDED, orientation: Orientation.HORIZONTAL),
         ResultData(title: nil, path: "/movie/all", query: URLQueryItem(name: "sortBy", value: "popularity"), style: CardStyle.REGULAR, orientation: Orientation.HORIZONTAL),
         ResultData(title: nil, path: "/movie/all", query: URLQueryItem(name: "sortBy", value: "revenue"), style: CardStyle.REGULAR, orientation: Orientation.HORIZONTAL)
 
@@ -24,7 +25,7 @@ struct HomeView: View {
         
             ScrollView {
                 
-                if show {
+                if viewModel.isSignedIn {
                     BookmarksView(style: CardStyle.EXPANDED, orientation: Orientation.HORIZONTAL)
 
                 }
@@ -53,15 +54,7 @@ struct HomeView: View {
                 
             }
             .padding(.horizontal)
-        
-        .onAppear(perform: {
-            Auth.auth().addStateDidChangeListener() { auth, user in
-                if user != nil {
-                    show = true
-                }
-            }
-        })
-
+    
         
 
     }

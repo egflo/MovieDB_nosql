@@ -69,8 +69,9 @@ class NetworkManager {
     }
     
     func token(_ completion: @escaping (Result<String,Error>) -> ()) {
+        
                 guard let user = Auth.auth().currentUser else {
-                    completion(.failure(NetworkError.invalidCredentials))
+                    completion(.failure(NetworkError.invalidAuthorization))
                     return
                 }
         

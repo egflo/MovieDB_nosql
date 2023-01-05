@@ -6,93 +6,174 @@
 
 import SwiftUI
 import Alamofire
+import Firebase
+
+
+struct ModalColorView: UIViewRepresentable {
+    
+    let color: UIColor
+    
+    func makeUIView(context: Context) -> some UIView {
+        let view = UIView()
+        DispatchQueue.main.async {
+            view.superview?.superview?.backgroundColor = color
+        }
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIViewType, context: Context) {}
+}
+
+struct ModalColorViewModifier: ViewModifier {
+    
+    let color: UIColor
+    
+    func body(content: Content) -> some View {
+        content
+            .background(ModalColorView(color: color))
+    }
+}
+
+extension View {
+    /// Set transparent or custom color for a modal background (.screen, .fullScreenCover)
+    func modalColor(_ color: UIColor = .clear) -> some View {
+        self.modifier(ModalColorViewModifier(color: color))
+    }
+}
 
 struct BookmarkAction: View {
     @EnvironmentObject var alert: Alert
+    @ObservedObject var viewModel = UserViewModel()
 
     let movie: Movie
     
     @State var bookmark: Bookmark?
+    @State var open: Bool = false
     
     var body: some View {
         
-            VStack {
-                if let bookmark = bookmark {
-
-                    
-                    Button {
-                        print("Remove Bookmark")
-                        delete(id: bookmark.id)
-                    } label: {
-                        VStack(spacing: 5) {
-                            
-                            VStack {
-                                Image(systemName:"minus")
-                                    .font(.system(size: 22))
-                                    .foregroundColor(.white)
-                                    .background(
-                                        Rectangle()
-                                            .fill(Color(.systemGray4))
-                                            .opacity(0.8)
-                                            .padding(4)
-
-                                    )
-                            }
-                            .frame(width: 50, height: 50)
-                                                        
-                            Text("My List")
-                                .font(.subheadline)
-                            
+        VStack {
+            
+            if !viewModel.isSignedIn {
+                
+                Button {
+                    print("Add Bookmark")
+                    open.toggle()
+                } label: {
+                    VStack(spacing: 5) {
+                        VStack {
+                            Image(systemName:"plus")
+                                .font(.system(size: 22))
+                                .foregroundColor(.white)
+                                .background(
+                                    Rectangle()
+                                        .fill(Color(.systemGray4))
+                                        .opacity(0.8)
+                                        .padding(4)
+                                    
+                                )
                         }
-
+                        .frame(width: 50, height: 50)
+                        
+                        Text("My List")
+                            .font(.subheadline)
+                        
                     }
                     
                 }
-                else {
-                    Button {
-                        print("Add Bookmark")
-                        create(id: movie.id)
-                    } label: {
-                        VStack(spacing: 5) {
-                            VStack {
-                                Image(systemName:"plus")
-                                    .font(.system(size: 22))
-                                    .foregroundColor(.white)
-                                    .background(
-                                        Rectangle()
-                                            .fill(Color(.systemGray4))
-                                            .opacity(0.8)
-                                            .padding(4)
-
-                                    )
-                            }
-                            .frame(width: 50, height: 50)
-                            
-                            Text("My List")
-                                .font(.subheadline)
-                            
-                        }
-
-                    }
-                }
+                
             }
-            .onAppear(perform: {
-                NetworkManager.shared.token() { (result) in
-                    switch result {
-                    case .success(let res):
-                        DispatchQueue.main.async {
-                            
-                            get(id: movie.id, token: res)
+            
+            else {
+                
+                VStack {
+                    if let bookmark = bookmark {
+                        
+                        Button {
+                            print("Remove Bookmark")
+                            delete(id: bookmark.id)
+                        } label: {
+                            VStack(spacing: 5) {
+                                
+                                VStack {
+                                    Image(systemName:"minus")
+                                        .font(.system(size: 22))
+                                        .foregroundColor(.white)
+                                        .background(
+                                            Rectangle()
+                                                .fill(Color(.systemGray4))
+                                                .opacity(0.8)
+                                                .padding(4)
+                                            
+                                        )
+                                }
+                                .frame(width: 50, height: 50)
+                                
+                                Text("My List")
+                                    .font(.subheadline)
+                                
+                            }
                             
                         }
-                    case .failure(let error):
-                        alert.toast = Toast(type: .error, headline: "Error", subtitle: error.localizedDescription)
-
                     }
-                }
-            })
-        
+                    
+                    else {
+                        
+                        Button {
+                            print("Add Bookmark")
+                            create(id: movie.id)
+                        } label: {
+                            VStack(spacing: 5) {
+                                VStack {
+                                    Image(systemName:"plus")
+                                        .font(.system(size: 22))
+                                        .foregroundColor(.white)
+                                        .background(
+                                            Rectangle()
+                                                .fill(Color(.systemGray4))
+                                                .opacity(0.8)
+                                                .padding(4)
+                                            
+                                        )
+                                }
+                                .frame(width: 50, height: 50)
+                                
+                                Text("My List")
+                                    .font(.subheadline)
+                                
+                            }
+                            
+                        }
 
+                        
+                    }
+                    
+                }
+                .onAppear(perform: {
+                    NetworkManager.shared.token() { (result) in
+                        switch result {
+                        case .success(let res):
+                            DispatchQueue.main.async {
+                                
+                                get(id: movie.id, token: res)
+                                
+                            }
+                        case .failure(let error):
+                            
+                            alert.toast = Toast(type: .error, headline: "Error", subtitle: error.localizedDescription)
+                            
+                        }
+                    }
+                })
+            }
+            
+        }
+        .popover(isPresented: $open) {
+            
+            Text("Login to add to favorites")
+                .font(.subheadline)
+        }
+        
     }
 }
 
@@ -171,6 +252,8 @@ extension BookmarkAction {
 
 struct RateAction: View {
     let movie: Movie
+    @EnvironmentObject var alert: Alert
+
     @State var open:Bool = false
 
     var body: some View {
@@ -199,20 +282,24 @@ struct RateAction: View {
                     
             
         }
+        //attachmentAnchor: .point(.bottom), arrowEdge: .bottom
         .popover(isPresented: $open) {
+            
+            VStack {
                 HStack(alignment: .center, spacing: 15) {
                     Button {
                         print("Not for me")
+                        create(id: movie.id, status: Status.dislike)
                         self.open.toggle()
-
+                        
                     } label: {
                         VStack(spacing: 5) {
                             Image(systemName:"hand.thumbsdown")
                                 .font(.system(size: 22))
                                 .foregroundColor(.white)
-
+                            
                             Spacer()
-
+                            
                             
                             Text("Dislike")
                             
@@ -222,16 +309,17 @@ struct RateAction: View {
                     
                     Button {
                         print("I like this")
+                        create(id: movie.id, status: Status.like)
                         self.open.toggle()
-
+                        
                     } label: {
                         VStack(spacing: 5) {
                             Image(systemName:"hand.thumbsup")
                                 .font(.system(size: 22))
                                 .foregroundColor(.white)
-
+                            
                             Spacer()
-
+                            
                             Text("Like")
                             
                         }
@@ -240,16 +328,17 @@ struct RateAction: View {
                     
                     Button {
                         print("Love")
+                        create(id: movie.id, status: Status.love)
                         self.open.toggle()
-
+                        
                     } label: {
                         VStack(spacing: 5) {
                             Image(systemName:"heart")
                                 .font(.system(size: 22))
                                 .foregroundColor(.white)
-      
+                            
                             Spacer()
-
+                            
                             Text("Love")
                         }
                         
@@ -257,17 +346,53 @@ struct RateAction: View {
                     
                 }
                 .buttonStyle(PlainButtonStyle())
-                .padding(10)
-                //.background(Color(UIColor.systemGray4))
-                .cornerRadius(8)
-                .frame(width: 220)
-                //.shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 0)
-                //.offset(x: 0, y: -75) // Move the view above the button
-                //.zIndex(2)
+                .frame(height: 50)
+                    .padding(.vertical)
+
             }
+            .presentationDetents([.height(200), .fraction(0.8), .large])
+            .cornerRadius(8)
 
         }
+
+    }
             
+}
+
+extension RateAction {
+    
+    func create(id: String, status: Status) {
+        guard let user = Auth.auth().currentUser else {
+            alert.toast = Toast(type: .error, headline: "Error", subtitle: "Unable to retrieve user information")
+            return
+        }
+        
+        let timeStamp = UInt64(Date().timeIntervalSince1970 * 1000)
+        let parameters: Parameters = [
+            "objectId": id,
+            "userId": user.uid,
+            "status": status.rawValue,
+            "created": timeStamp
+        ]
+        
+        
+        let path = "/movie/rate"
+        NetworkManager.shared.postRequest(of: Response<Sentiment>.self, path: path, parameters: parameters){ (result) in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    
+                    print(response)
+                    alert.toast = Toast(type: response.success ? .success : .error, headline: "Info", subtitle:response.message)
+                    
+                }
+            case .failure(let error):
+                alert.toast = Toast(type: .error, headline: "Error", subtitle: error.localizedDescription)
+                
+            }
+        }
+    }
+
     
 }
 
